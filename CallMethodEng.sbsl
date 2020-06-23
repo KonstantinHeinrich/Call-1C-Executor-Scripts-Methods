@@ -1,0 +1,62 @@
+
+method Script()
+    val ScripthPath = "F:\\1C\\Executor\\SingularPluralEng.sbsl" //1
+    Console.Write("I have " + CallScriptMethod(ScripthPath, "DeclensionWithNumber", [4, "apple", "-"])) //2
+    val Params = {"Count": 6, "Singular": "orange", "Plural": "-"} //3
+    Console.Write("You have " + CallScriptMethod(ScripthPath, "DeclensionWithNumber", Params))
+    Console.Write("He has " + CallScriptMethod(ScripthPath, "DeclensionWithNumber", 25, "cherry", "cherries"))
+;
+
+method CallScriptMethod(ScriptPath: String, MethodName = "", Params = []): String //1
+
+    val ExecutorPath = "F:\\1C\\Executor\\bin\\executor_j11.cmd" //2
+
+    val Args = new Array() //3
+    Args.AddAll(["-s", "\"%ScriptPath\""]) //4
+    if not MethodName.IsEmpty() //5
+        Args.AddAll(["-m", MethodName])
+    ;
+    Args.AddAll(Params) //6
+
+    var Result = ""
+    val Process = new OsProcess(ExecutorPath, Args) //7
+    Process.Start()
+    while True
+        val Output = Process.OutputStream.ReadAsText() //8
+        if Output.IsEmpty()
+            break
+        ;
+        Result += "\n%Output" //9
+    ;
+
+    return Result.Trim() //10
+;
+
+method CallScriptMethod(ScriptPath: String, MethodName = "", Params = {:}): String //1
+    
+    val ParamsArray = new Array()
+    for Param in Params //2
+        ParamsArray.Add(Param.Value)
+    ;
+    return CallScriptMethod(ScriptPath, MethodName, ParamsArray) //3
+;
+
+method CallScriptMethod(
+    ScriptPath: String,
+    MethodName = "",
+    Param1: String|Number|Boolean|? = Undefined, //1
+    Param2: String|Number|Boolean|? = Undefined,
+    Param3: String|Number|Boolean|? = Undefined): String
+    
+    val ParamsArray = new Array()
+    if Param1 != Undefined
+        ParamsArray.Add(Param1)
+    ;
+    if Param2 != Undefined
+        ParamsArray.Add(Param2)
+    ;
+    if Param3 != Undefined
+        ParamsArray.Add(Param3)
+    ;
+    return CallScriptMethod(ScriptPath, MethodName, ParamsArray)
+;

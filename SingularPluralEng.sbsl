@@ -1,0 +1,20 @@
+
+method Script()
+    Console.Write(DeclensionWithNumber(42, "table"))
+    Console.Write(DeclensionWithNumber(5, "mouse", "mice"))  
+;
+
+method DeclensionWithNumber(Count: Number, Singular: String, Plural = "-"): String //1
+
+    val Digits = ["zero","one","two","three","four","five","six","seven","eight","nine"] //2
+    val CountWord = (Count < 10 ? Digits[Count] : String(Count)) //3
+    
+    var ObjectWord: String //4
+    if Count != 1 //5
+        ObjectWord = (Plural == "-" ? Singular + "s" : Plural)
+    else
+        ObjectWord = Singular
+    ;
+
+    return "%CountWord %ObjectWord" //6
+;
